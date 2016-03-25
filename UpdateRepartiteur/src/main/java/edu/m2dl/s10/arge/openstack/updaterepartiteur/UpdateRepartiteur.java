@@ -1,4 +1,4 @@
-package UpdateRepartiteur;
+package edu.m2dl.s10.arge.openstack.updaterepartiteur;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
