@@ -12,6 +12,8 @@
         <module>Client</module>
         <module>Repartiteur</module>
         <module>Calculateur</module>
+        <module>UpdateClient</module>
+        <module>UpdateRepartiteur</module>
     </modules>
 
     <dependencies>
