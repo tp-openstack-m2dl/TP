@@ -19,22 +19,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>edu.m2dl.s10</groupId>
-            <artifactId>arge.openstack.calculateur</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>edu.m2dl.s10</groupId>
-            <artifactId>arge.openstack.client</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>edu.m2dl.s10</groupId>
-            <artifactId>arge.openstack.repartiteur</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>ws-commons-util</groupId>
             <artifactId>ws-commons-util</artifactId>
             <version>1.0.1</version>
