@@ -10,7 +10,6 @@
 
     <dependencies>
 
-
         <dependency>
             <groupId>ws-commons-util</groupId>
             <artifactId>ws-commons-util</artifactId>
