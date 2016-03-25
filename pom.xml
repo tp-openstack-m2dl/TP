@@ -6,7 +6,13 @@
 
     <groupId>edu.m2dl.s10</groupId>
     <artifactId>arge.openstack</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>Client</module>
+        <module>Repartiteur</module>
+        <module>Calculateur</module>
+    </modules>
 
     <dependencies>
 

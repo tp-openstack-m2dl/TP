@@ -1,4 +1,4 @@
-package edu.m2dl.s10.arge.openstack.repartiteur;
+package m2dl.s10.arge.openstack.repartiteur;
 
 /**
  * Created by julien on 25/03/16.
