@@ -75,7 +75,6 @@ public class Repartiteur implements Runnable {
 
         while(true) {
 
-            // Serveur : Récupérer les requetes des clients
 
 
             // Serveur : Récupérer les requetes de l'updateRepartiteur
@@ -92,10 +91,18 @@ public class Repartiteur implements Runnable {
     }
 
     public void add(String ip, String port) {
+        System.out.println("AJOUTE UN CALCULTEUR ["+ip+":"+port+"]");
 
     }
 
     public void del(String ip, String port) {
+        // Appel de Léo
+        System.out.println("SUPPRIME UN CALCULTEUR ["+ip+":"+port+"]");
 
+    }
+
+    public void request() {
+        // Appel du client
+        System.out.println("REDIRIGE LA REQUETE VERS UN CALCULATEUR");
     }
 }
