@@ -10,13 +10,52 @@ import java.net.URL;
  * Created by cedricrohaut on 25/03/2016.
  */
 public class Client {
+    private static int nbReq;
+    private static String ipRepartiteur;
+    private static String port;
+
+    public Client(int nbReq, String ipRepartiteur, String port) {
+        this.nbReq = nbReq;
+        this.ipRepartiteur = ipRepartiteur;
+        this.port = port;
+    }
+
+    public int getNbReq() {
+        return nbReq;
+    }
+
+    public void setNbReq(int nbReq) {
+        this.nbReq = nbReq;
+    }
+
+    public String getIpRepartiteur() {
+        return ipRepartiteur;
+    }
+
+    public void setIpRepartiteur(String ipRepartiteur) {
+        this.ipRepartiteur = ipRepartiteur;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
     public static void main(String args[]) throws Exception {
         String nbReqTemp= args[0];
-        int nbReq = Integer.parseInt(nbReqTemp);
-        String ipRepartiteur = args[1];
-        String port = args[2];
+        nbReq = Integer.parseInt(nbReqTemp);
+        ipRepartiteur = args[1];
+        port = args[2];
 
-        String url = ipRepartiteur + ":" + port;
+        System.out.println("Le nom du thread principal est " + Thread.currentThread().getName());
+
+        ThreadUpdate t = new ThreadUpdate("ThreadUpdate");
+        t.start();
+
+        String url = "http://" + ipRepartiteur + ":" + port + "/request";
         System.out.println(url);
 
         // create configuration
@@ -34,11 +73,19 @@ public class Client {
         // set configuration
         client.setConfig(config);
 
-        // make the a regular call
-        Object[] params = new Object[]
-                { new Integer(2), new Integer(3) };
-        Integer result = (Integer) client.execute("Calculator.add", params);
-        System.out.println("2 + 3 = " + result);
+        while (true) {
+            nbReq = t.getNbReq();
+            //System.out.println("Main - nombre de requêtes " + nbReq);
+
+            for (int i = 0 ; i < nbReq ; ++i) {
+                // make the a regular call
+                Object[] params = new Object[]
+                        { new Integer(2), new Integer(3) };
+                Integer result = (Integer) client.execute("Calculator.add", params);
+                System.out.println("2 + 3 = " + result);
+            }
+        }
+
 
         // make a call using dynamic proxy
 	  /*          ClientFactory factory = new ClientFactory(client);
