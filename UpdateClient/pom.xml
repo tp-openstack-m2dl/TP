@@ -18,7 +18,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>edu.m2dl.s10.arge.openstack.</mainClass>
+                            <mainClass>edu.m2dl.s10.arge.openstack.updateclient.UpdateClient</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

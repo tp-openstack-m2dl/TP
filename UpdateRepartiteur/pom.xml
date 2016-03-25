@@ -18,7 +18,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>edu.m2dl.s10.arge.openstack.repartiteur.Repartiteur</mainClass>
+                            <mainClass>edu.m2dl.s10.arge.openstack.updaterepartiteur.UpdateRepartiteur</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
