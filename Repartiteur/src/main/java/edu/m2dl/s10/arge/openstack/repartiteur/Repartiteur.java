@@ -28,12 +28,10 @@ public class Repartiteur implements Runnable {
     }
 
     private String port;
-    Map<Calculateur> lesCalculateurs;
 
-    @Override
     public void run() {
 
-        WebServer webServer = new WebServer(port);
+        WebServer webServer = new WebServer(Integer.parseInt(port));
 
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
 
