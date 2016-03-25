@@ -16,6 +16,10 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId></groupId>
+            <artifactId></artifactId>
+        </dependency>
 
         <dependency>
             <groupId>ws-commons-util</groupId>
