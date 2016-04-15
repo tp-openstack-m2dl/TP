@@ -18,7 +18,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>edu.m2dl.s10.arge.openstack.calculateur.EntryPoint</mainClass>
+                            <mainClass>edu.m2dl.s10.arge.openstack.calculateur.Server</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
