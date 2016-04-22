@@ -42,10 +42,7 @@ public class Repartiteur implements Runnable {
            *   org.apache.xmlrpc.demo.proxy.Adder=org.apache.xmlrpc.demo.proxy.AdderImpl
            */
         try {
-            phm.load(Thread.currentThread().getContextClassLoader(),
-                    "XmlRpcServlet.properties");
-        } catch (IOException e) {
-            e.printStackTrace();
+            phm.addHandler("Calculateur", edu.m2dl.s10.arge.openstack.calculateur.Calculateur.class);
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }

@@ -3,7 +3,11 @@ package edu.m2dl.s10.arge.openstack.calculateur;
 import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
+import org.apache.xmlrpc.util.ThreadPool;
 import org.apache.xmlrpc.webserver.WebServer;
+
+import java.io.InputStream;
+import java.net.URL;
 
 //  import org.apache.xmlrpc.demo.webserver.proxy.impls.AdderImpl;
 
@@ -30,13 +34,16 @@ public class Server {
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
 
         PropertyHandlerMapping phm = new PropertyHandlerMapping();
+        phm.addHandler("Calculateur", edu.m2dl.s10.arge.openstack.calculateur.Calculateur.class);
+
           /* Load handler definitions from a property file.
            * The property file might look like:
            *   Calculator=org.apache.xmlrpc.demo.Calculator
            *   org.apache.xmlrpc.demo.proxy.Adder=org.apache.xmlrpc.demo.proxy.AdderImpl
            */
-        phm.load(Thread.currentThread().getContextClassLoader(),
-                "edu/m2dl/s10/arge/openstack/calculateur/XmlRpcServlet.properties");
+        //phm.load(Thread.currentThread().getContextClassLoader(),
+          //      Object.class.getResourceAsStream(
+            //            "edu/m2dl/s10/arge/openstack/calculateur/XmlRpcServlet.properties"));
 
           /* You may also provide the handler classes directly,
            * like this:
