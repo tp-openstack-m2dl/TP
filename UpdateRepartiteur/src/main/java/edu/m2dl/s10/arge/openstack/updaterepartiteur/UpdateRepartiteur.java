@@ -18,6 +18,7 @@ public class UpdateRepartiteur {
     public UpdateRepartiteur(String ipRepartiteur, String portRepartiteur) throws MalformedURLException, XmlRpcException {
         // create configuration
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        System.out.println("http://" + ipRepartiteur + ":" + portRepartiteur + "/xmlrpc");
         config.setServerURL(new URL("http://" + ipRepartiteur + ":" + portRepartiteur + "/xmlrpc"));
         config.setEnabledForExtensions(true);
         config.setConnectionTimeout(60 * 1000);
@@ -33,7 +34,7 @@ public class UpdateRepartiteur {
     }
 
     public Object run(String command, Object[] params) throws MalformedURLException, XmlRpcException {
-        return client.execute(command, params);
+        return client.execute("Server." + command, params);
     }
 
 
@@ -41,8 +42,9 @@ public class UpdateRepartiteur {
         if (args.length != 5) {
             throw new RuntimeException("update_repartiteur IPRepartiteur PortRepartiteur add|del Argument1 Argument2");
         }
-        Object[] params = new Object[]
-                {args[3], args[4]};
+
+        Object[] params = new Object[] {args[3], args[4]};
+
         UpdateRepartiteur updateRepartiteur = new UpdateRepartiteur(args[0], args[1]);
         updateRepartiteur.run(args[2], params);
     }

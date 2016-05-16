@@ -37,16 +37,15 @@ public class UpdateClient {
     }
 
     public static void main(String[] args) throws Exception {
-        if(args.length != 4)
+        if(args.length != 3)
             throw new RuntimeException("missing arguments, Syntaxe: update_client param addresse port");
 
-        UpdateClient updater = new UpdateClient(args[3],args[4]);
+        UpdateClient updater = new UpdateClient(args[1],args[2]);
 
         Object[] params = new Object[]
-                { new Integer(args[1]), args[2] };
-        if(!(Boolean) updater.run("update", params))
+                { new Integer(args[0])};
+        if(!(Boolean) updater.run("Updater.setNbReq", params))
             throw new RuntimeException("Failed to Update client");
-
-
+        System.out.println("Done. Set to " + args[0]);
     }
 }

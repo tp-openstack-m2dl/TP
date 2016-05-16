@@ -6,61 +6,36 @@ import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
 import org.apache.xmlrpc.webserver.WebServer;
 
-import java.io.IOException;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by julien on 25/03/16.
  */
-public class Repartiteur implements Runnable {
-    public static void main(String[] args) {
+public class Repartiteur {
+
+    public static void main(String[] args) throws XmlRpcException {
         if(args.length != 1) {
-            System.out.println("Il faut fournir le numéro du port");
+            System.out.println("Erreur dans les arguments. Ajoutez un port");
         }
 
         String port = args[0];
 
-        // Boucle de reception des requetes
+        // Crée un obj répartiteur en mode singleton
+        // et lance une VM de calculateur si le port est différent de 3654
+        Repartiteur r = Repartiteur.getInstance(port);
 
-        Repartiteur r = new Repartiteur(port);
-        r.run();
+        // Lance le thread qui surveille la charge des calculateurs
+        LoadBalancing loadBalancing = new LoadBalancing("loadbalancing");
+        loadBalancing.start();
 
-    }
-
-    private String port;
-
-    public void run() {
-
-        WebServer webServer = new WebServer(Integer.parseInt(port));
-
+        // Lancement du serveur
+        WebServer webServer = new WebServer(new Integer(port));
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
-
         PropertyHandlerMapping phm = new PropertyHandlerMapping();
-          /* Load handler definitions from a property file.
-           * The property file might look like:
-           *   Calculator=org.apache.xmlrpc.demo.Calculator
-           *   org.apache.xmlrpc.demo.proxy.Adder=org.apache.xmlrpc.demo.proxy.AdderImpl
-           */
-        try {
-            phm.load(Thread.currentThread().getContextClassLoader(),
-                    "XmlRpcServlet.properties");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-        }
-
-          /* You may also provide the handler classes directly,
-           * like this:
-           * phm.addHandler("Calculator",
-           *     org.apache.xmlrpc.demo.Calculator.class);
-           * phm.addHandler(org.apache.xmlrpc.demo.proxy.Adder.class.getName(),
-           *     org.apache.xmlrpc.demo.proxy.AdderImpl.class);
-           */
+        phm.addHandler("Server", Server.class);
         xmlRpcServer.setHandlerMapping(phm);
-
-        XmlRpcServerConfigImpl serverConfig =
-                (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
+        XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
         serverConfig.setEnabledForExtensions(true);
         serverConfig.setContentLengthOptional(false);
 
@@ -69,38 +44,92 @@ public class Repartiteur implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public enum MODES {
+        PROD,
+        LOCAL
+    };
+    private MODES mode;
+    private String port;
+    private static List<Calculateur> calculateurs = new ArrayList();
+    private static Repartiteur instance;
+
+    public static synchronized Repartiteur getInstance(String port) {
+        if (instance == null) {
+            instance = new Repartiteur(port);
+        }
+        return instance;
+    }
+    public static synchronized Repartiteur getInstance() {
+        return instance;
+    }
+
+    private Repartiteur(String port) {
+        if (port.equals("3654")) {
+            System.out.println("* * * LOCAL MODE / NO VMS WILL BE CREATED / DEV PORT " + port);
+            // cas spécial, on est en local
+            this.mode = MODES.LOCAL;
+        } else {
+            this.mode = MODES.PROD;
+        }
+        if(mode.equals(MODES.PROD)) {
+            System.out.println("Lancement d'un premier calculateur ");
+            OpenStackService ops = new OpenStackService();
+            Calculateur cal = ops.addVM();
+
+            // AJOUT D'UN PREMIER CALCULATEUR
+            calculateurs.add(cal);
+            System.out.println(cal);
+        }
+    }
+    public Boolean add(String ip, String port) {
 
 
-        while(true) {
+        Calculateur calculateurLocal = null;
 
-
-
-            // Serveur : Récupérer les requetes de l'updateRepartiteur
-
-
-            // Client : Contacter les Calculateur
-
+        if(mode.equals(MODES.PROD)) {
+            OpenStackService ops = new OpenStackService();
+            calculateurLocal = ops.addVM();
         }
 
+        if(mode.equals(MODES.LOCAL)) {
+            calculateurLocal = new Calculateur("localhost", port, null);
+        }
+
+        calculateurs.add(calculateurLocal);
+        System.out.println("ADD ["+calculateurLocal.ip+", "+ calculateurs.size()+" calculateurs]");
+        return true;
     }
 
-    public Repartiteur(String port) {
-        this.port = port;
+
+    public Calculateur getAvailableCalculateur() {
+        if (calculateurs.size() > 0) {
+            Random rand = new Random();
+            int random = rand.nextInt(calculateurs.size());
+            System.out.println("Use the "+random +" calcultateur");
+            return calculateurs.get(random);
+        }
+        return null;
     }
 
-    public void add(String ip, String port) {
-        System.out.println("AJOUTE UN CALCULTEUR ["+ip+":"+port+"]");
-
+    public List<Calculateur> getCalculateurs() {
+        return calculateurs;
     }
 
-    public void del(String ip, String port) {
-        // Appel de Léo
-        System.out.println("SUPPRIME UN CALCULTEUR ["+ip+":"+port+"]");
-
+    public void setCalculateurs(List<Calculateur> calculateurs) {
+        Repartiteur.calculateurs = calculateurs;
     }
+    public void removeCalculateur(Calculateur c) {
+        List<Calculateur> calculateurs = this.getCalculateurs();
 
-    public void request() {
-        // Appel du client
-        System.out.println("REDIRIGE LA REQUETE VERS UN CALCULATEUR");
+        for (Iterator<Calculateur> iterator = calculateurs.iterator(); iterator.hasNext();) {
+            Calculateur calculateur = iterator.next();
+            if (calculateur.port.equals(c.getPort()) &&
+                    calculateur.ip.equals(c.getIp())) {
+                iterator.remove();
+            }
+        }
+        this.setCalculateurs(calculateurs);
     }
 }

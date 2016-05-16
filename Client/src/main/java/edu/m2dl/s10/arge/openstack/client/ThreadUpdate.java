@@ -12,6 +12,9 @@ public class ThreadUpdate extends Thread {
         return nbReq;
     }
 
+    public int getWaitTimeBetweenRequest() {
+        return 1000 / nbReq;
+    }
     public void setNbReq(int nbReq) {
         this.nbReq = nbReq;
     }

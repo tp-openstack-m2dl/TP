@@ -5,7 +5,6 @@ import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
 import org.apache.xmlrpc.webserver.WebServer;
 
-//  import org.apache.xmlrpc.demo.webserver.proxy.impls.AdderImpl;
 
 public class Server {
     public static void main(String[] args) throws Exception {
@@ -22,7 +21,7 @@ public class Server {
             return;
         }
 
-        System.out.println(String.format("Launching server on port %d", port));
+        System.out.println(String.format("Calculateur port %d", port));
 
 
         WebServer webServer = new WebServer(port);
@@ -30,21 +29,9 @@ public class Server {
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
 
         PropertyHandlerMapping phm = new PropertyHandlerMapping();
-          /* Load handler definitions from a property file.
-           * The property file might look like:
-           *   Calculator=org.apache.xmlrpc.demo.Calculator
-           *   org.apache.xmlrpc.demo.proxy.Adder=org.apache.xmlrpc.demo.proxy.AdderImpl
-           */
-        phm.load(Thread.currentThread().getContextClassLoader(),
-                "edu/m2dl/s10/arge/openstack/calculateur/XmlRpcServlet.properties");
 
-          /* You may also provide the handler classes directly,
-           * like this:
-           * phm.addHandler("Calculator",
-           *     org.apache.xmlrpc.demo.Calculator.class);
-           * phm.addHandler(org.apache.xmlrpc.demo.proxy.Adder.class.getName(),
-           *     org.apache.xmlrpc.demo.proxy.AdderImpl.class);
-           */
+        phm.addHandler("Server", Calculateur.class);
+
         xmlRpcServer.setHandlerMapping(phm);
 
         XmlRpcServerConfigImpl serverConfig =

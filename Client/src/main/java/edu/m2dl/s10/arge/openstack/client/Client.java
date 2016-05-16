@@ -3,7 +3,11 @@ package edu.m2dl.s10.arge.openstack.client;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
+import org.apache.xmlrpc.server.PropertyHandlerMapping;
+import org.apache.xmlrpc.server.XmlRpcServer;
+import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
 import org.apache.xmlrpc.webserver.ServletWebServer;
+import org.apache.xmlrpc.webserver.WebServer;
 
 import java.net.URL;
 
@@ -61,6 +65,7 @@ public class Client {
 
         ThreadUpdate t = new ThreadUpdate("ThreadUpdate");
         t.start();
+        Server.getInstance(19000, t).run();
 
         String url = "http://" + ipRepartiteur + ":" + port + "/request";
         System.out.println(url);
@@ -75,34 +80,22 @@ public class Client {
         XmlRpcClient client = new XmlRpcClient();
 
         // use Commons HttpClient as transport
-        client.setTransportFactory(
-                new XmlRpcCommonsTransportFactory(client));
+        client.setTransportFactory(new XmlRpcCommonsTransportFactory(client));
         // set configuration
         client.setConfig(config);
         t.setNbReq(nbReq);
-
+        // Entier dont on va calculer le nombre de diviseurs
+        int i = 0 ;
         while (true) {
-            nbReq = t.getNbReq();
-            System.out.println("Main - nombre de requêtes " + nbReq);
-
-            for (int i = 0 ; i < nbReq ; i++) {
-                // make the a regular call
-                Object[] params = new Object[]
-                        { new Integer(2), new Integer(3) };
-               // Integer result = (Integer) client.execute("Calculator.add", params);
-               // System.out.println("2 + 3 = " + result);
-                System.out.println("" + i);
-
+            // make the a regular call
+            Object[] params = new Object[] { new Integer(i)};
+            client.executeAsync("Server.nbDiviseurs", params, new CalculateurCallback());
+            sleep(t.getWaitTimeBetweenRequest());
+            i++;
+            if (i > 50) {
+                i -= 25;
             }
-            sleep(1000);
         }
-
-
-        // make a call using dynamic proxy
-	  /*          ClientFactory factory = new ClientFactory(client);
-          Adder adder = (Adder) factory.newInstance(Adder.class);
-          int sum = adder.add(2, 4);
-          System.out.println("2 + 4 = " + sum);
-	  */
     }
+
 }

@@ -36,5 +36,22 @@
             </plugin>
         </plugins>
     </build>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.github.dblock</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>2.4</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>java.net</id>
+            <url>https://repository.jboss.org/</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>Spring Maven Repository Repository</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
+    </repositories>
 </project>
